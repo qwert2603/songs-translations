@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <LinearLayout android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView android:id="@+id/song_title_eng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/SongTitle"/>
+
+    <TextView android:id="@+id/song_author_eng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/SongAuthor"/>
+
+    <TextView android:id="@+id/song_text_eng"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/SongText" />
+
+    <TextView android:id="@+id/song_title_rus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/SongTitle"/>
+
+    <TextView android:id="@+id/song_author_rus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/SongAuthor"/>
+
+    <TextView android:id="@+id/song_text_rus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/SongText" />
+
+    </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

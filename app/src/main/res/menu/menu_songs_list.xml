@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_search"
+        android:title="@string/text_search"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="ifRoom"
+        app:actionViewClass="android.widget.SearchView"/>
+
+    <item android:id="@+id/action_rate"
+        android:title="@string/text_rate"
+        android:icon="@android:drawable/star_big_on"
+        app:showAsAction="ifRoom"/>
+
+</menu>

@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_search"
+        android:title="@string/text_search"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/action_open_saved"
+        android:title="@string/text_saved"
+        android:icon="@android:drawable/ic_menu_save"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/action_delete_lists"
+        android:title="@string/text_clear_lists_cache"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/action_delete_saved_songs"
+        android:title="@string/text_clear_saved_songs_cache"
+        app:showAsAction="never"/>
+</menu>

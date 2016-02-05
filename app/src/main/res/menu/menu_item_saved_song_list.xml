@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_delete_item"
+        android:title="@string/text_delete_selected_songs"
+        android:icon="@android:drawable/ic_delete"
+        app:showAsAction="ifRoom"/>
+
+</menu>
