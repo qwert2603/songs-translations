@@ -1,8 +1,6 @@
 package com.example.alex.amalgamasongs.entity;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.example.alex.amalgamasongs.json_serialize.ArrayListJSONSerializer;
 import com.example.alex.amalgamasongs.json_serialize.JSONSerializable;
@@ -36,7 +34,6 @@ public class SavedSong implements Serializable, JSONSerializable {
                             context
                             , ArrayListJSONSerializer.SAVED_SONGS_FILENAME
                             , new SavedSong());
-            checkN_2_BR(context);
         }
     }
 
@@ -81,29 +78,6 @@ public class SavedSong implements Serializable, JSONSerializable {
         checkSavedSongsLoaded(context);
         sSavedSongs.clear();
         saveSavedSongs(context);
-    }
-
-    /**
-     * Была ли выполнена замена "\n" на "<br/>" во всех ранее сохраненных переводах.
-     */
-    private static final String PREF_N_2_BR = "PREF_N_2_BR";    // bool
-
-    /**
-     * При первом запуске меняем "\n" на "<br/>" во всех ранее сохраненных переводах.
-     * Это необходимо для корректного отображения с использованием 'Html.fromHtml()'.
-     */
-    private static void checkN_2_BR(Context context) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (! sharedPreferences.getBoolean(PREF_N_2_BR, false)) {
-            for (SavedSong savedSong : sSavedSongs) {
-                Translation translation = savedSong.getTranslation();
-                translation.mEngText = translation.mEngText.replace("\n", "<br/>");
-                translation.mRusText = translation.mRusText.replace("\n", "<br/>");
-            }
-            sharedPreferences.edit()
-                    .putBoolean(PREF_N_2_BR, true)
-                    .apply();
-        }
     }
 
     private final static String JSON_ARTIST = "artist";

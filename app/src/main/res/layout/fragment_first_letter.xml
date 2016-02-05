@@ -6,19 +6,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/text_translations_source"
-        android:textSize="16sp"
-        android:textColor="@android:color/black"
-        android:gravity="center"
-        android:padding="12dp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:text="@string/text_choose_letter"
         android:textSize="12sp"
         android:textColor="@android:color/black"
         android:gravity="center"
+        android:layout_marginTop="24dp"
         android:padding="8dp" />
 
     <GridView android:id="@+id/letters_grid_view"

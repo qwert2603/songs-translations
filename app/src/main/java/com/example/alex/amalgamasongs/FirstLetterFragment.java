@@ -4,20 +4,18 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.example.alex.amalgamasongs.entity.Artist;
 import com.example.alex.amalgamasongs.entity.SavedSong;
@@ -27,30 +25,26 @@ import java.util.ArrayList;
 
 public class FirstLetterFragment extends Fragment {
 
-    private GridView mGridView;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_first_letter, container, false);
 
-        mGridView = (GridView) view.findViewById(R.id.letters_grid_view);
+        GridView gridView = (GridView) view.findViewById(R.id.letters_grid_view);
         TextItemsAdapter<String> lettersAdapter = new TextItemsAdapter<>(getActivity(), R.layout.list_item_letter, getLetters());
-        mGridView.setAdapter(lettersAdapter);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getActivity(), ArtistsListActivity.class);
-                String letter = ((TextItemsAdapter<String>) parent.getAdapter()).getItem(position);
-                i.putExtra(ArtistsListActivity.EXTRA_LETTER, letter);
-                startActivity(i);
-            }
+        gridView.setAdapter(lettersAdapter);
+        gridView.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent i = new Intent(getActivity(), ArtistsListActivity.class);
+            String letter = ((TextItemsAdapter<String>) parent.getAdapter()).getItem(position);
+            i.putExtra(ArtistsListActivity.EXTRA_LETTER, letter);
+            startActivity(i);
         });
 
         return view;
@@ -76,7 +70,10 @@ public class FirstLetterFragment extends Fragment {
         else if (item.getItemId() == R.id.action_delete_lists) {
             Artist.clearSavedArtistsLists(getActivity());
             Song.clearSavedSongsLists(getActivity());
-            Toast.makeText(getActivity(), R.string.text_lists_cache_cleared, Toast.LENGTH_SHORT).show();
+            View view = getView();
+            if (view != null) {
+                Snackbar.make(view, R.string.text_lists_cache_cleared, Snackbar.LENGTH_SHORT).show();
+            }
             return true;
         }
         else if (item.getItemId() == R.id.action_delete_saved_songs) {
@@ -86,11 +83,11 @@ public class FirstLetterFragment extends Fragment {
                 public Dialog onCreateDialog(Bundle savedInstanceState) {
                     return new AlertDialog.Builder(getActivity())
                             .setTitle(getString(R.string.text_clear_saved_songs_cache) + "?")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    SavedSong.clearSavedSongs(getActivity());
-                                    Toast.makeText(getActivity(), R.string.text_saved_songs_cache_cleared, Toast.LENGTH_SHORT).show();
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                SavedSong.clearSavedSongs(getActivity());
+                                View view = FirstLetterFragment.this.getView();
+                                if (view != null) {
+                                    Snackbar.make(view, R.string.text_saved_songs_cache_cleared, Snackbar.LENGTH_SHORT).show();
                                 }
                             })
                             .setNegativeButton(R.string.text_cancel, null)

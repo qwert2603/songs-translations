@@ -7,9 +7,4 @@
         app:showAsAction="ifRoom"
         app:actionViewClass="android.widget.SearchView"/>
 
-    <item android:id="@+id/action_rate"
-        android:title="@string/text_rate"
-        android:icon="@android:drawable/star_big_on"
-        app:showAsAction="ifRoom"/>
-
 </menu>

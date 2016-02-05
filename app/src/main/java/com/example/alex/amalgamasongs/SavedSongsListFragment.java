@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,9 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.alex.amalgamasongs.entity.SavedSong;
 
@@ -31,15 +30,12 @@ public class SavedSongsListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_saved_songs_list, container, false);
 
         mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getActivity(), TranslationActivity.class);
-                SavedSong ss = mSavedSongs.get(position);
-                i.putExtra(TranslationActivity.EXTRA_ARTIST, ss.getArtist());
-                i.putExtra(TranslationActivity.EXTRA_SONG, ss.getSong());
-                startActivity(i);
-            }
+        mListView.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent i = new Intent(getActivity(), TranslationActivity.class);
+            SavedSong ss = mSavedSongs.get(position);
+            i.putExtra(TranslationActivity.EXTRA_ARTIST, ss.getArtist());
+            i.putExtra(TranslationActivity.EXTRA_SONG, ss.getSong());
+            startActivity(i);
         });
 
         mSavedSongs = SavedSong.getSavedSongs(getActivity());
@@ -86,10 +82,18 @@ public class SavedSongsListFragment extends Fragment {
             }
         });
 
-        if(mSavedSongs.isEmpty()) {
-            Toast.makeText(getActivity(), R.string.text_no_saved_songs, Toast.LENGTH_LONG).show();
-        }
-
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(mSavedSongs.isEmpty()) {
+            View view = getView();
+            if (view != null) {
+                Snackbar.make(view, R.string.text_no_saved_songs, Snackbar.LENGTH_LONG).show();
+            }
+        }
     }
 }

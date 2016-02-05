@@ -8,17 +8,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.example.alex.amalgamasongs.entity.Artist;
 import com.example.alex.amalgamasongs.entity.Song;
@@ -28,8 +27,9 @@ import java.util.ArrayList;
 public class SongsListFragment extends Fragment {
 
     private static final String artistKey = "artistKey";
+
     private static final String PREF_SHOW_CNT = "show_cnt";
-    private static final String PREF_SHOW_TOAST = "show_toast";
+    private static final String PREF_SHOW_SNACKBAR = "show_snackbar";
 
     private Artist mArtist;
     private ListView mListView;
@@ -61,21 +61,6 @@ public class SongsListFragment extends Fragment {
 
         // независимо от того, есть ли список песен этого исполнителя в кеше, обновляем его
         new FetchSongsTask().execute(mArtist.getLink());
-
-        // если пользователь еще не нажимал на пункт меню со звездочкой, просим его поставить оценку
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        boolean show_toast = sp.getBoolean(PREF_SHOW_TOAST, true);
-        if (show_toast) {
-            int q = sp.getInt(PREF_SHOW_CNT, -1);
-            ++q;
-            if (q == 6) {
-                q = 0;
-                Toast.makeText(getActivity(), R.string.text_rate_it, Toast.LENGTH_SHORT).show();
-            }
-            sp.edit()
-                    .putInt(PREF_SHOW_CNT, q)
-                    .apply();
-        }
     }
 
     @SuppressWarnings("unchecked")
@@ -86,15 +71,12 @@ public class SongsListFragment extends Fragment {
 
         mListView = (ListView) view.findViewById(android.R.id.list);
 
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getActivity(), TranslationActivity.class);
-                i.putExtra(TranslationActivity.EXTRA_ARTIST, mArtist);
-                Song song = ((TextItemsAdapter<Song>) parent.getAdapter()).getItem(position);
-                i.putExtra(TranslationActivity.EXTRA_SONG, song);
-                startActivity(i);
-            }
+        mListView.setOnItemClickListener((parent, view1, position, id) -> {
+            Intent i = new Intent(getActivity(), TranslationActivity.class);
+            i.putExtra(TranslationActivity.EXTRA_ARTIST, mArtist);
+            Song song = ((TextItemsAdapter<Song>) parent.getAdapter()).getItem(position);
+            i.putExtra(TranslationActivity.EXTRA_SONG, song);
+            startActivity(i);
         });
 
         mProgressBar = (ProgressBar) view.findViewById(android.R.id.empty);
@@ -104,6 +86,43 @@ public class SongsListFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // если пользователь еще не нажимал на "оценить", просим его поставить оценку
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean show_toast = sp.getBoolean(PREF_SHOW_SNACKBAR, true);
+        if (show_toast) {
+            int q = sp.getInt(PREF_SHOW_CNT, -1);
+            ++q;
+            if (q == 7) {
+                q = 0;
+                View view = getView();
+                if (view != null) {
+                    Snackbar.make(view, R.string.text_rate_it, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.text_rate, v -> onRateClick())
+                            .show();
+                }
+            }
+            sp.edit()
+                    .putInt(PREF_SHOW_CNT, q)
+                    .apply();
+        }
+    }
+
+    private void onRateClick() {
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse("market://details?id=com.alex.songs_translations"));
+        startActivity(i);
+
+        // после первого нажатия перестаем показывать тосты
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .edit()
+                .putBoolean(PREF_SHOW_SNACKBAR, false)
+                .apply();
     }
 
     private class FetchSongsTask extends AsyncTask<String, Void, ArrayList<Song>> {
@@ -168,7 +187,10 @@ public class SongsListFragment extends Fragment {
             }
         }
         if (mShowingSongs.isEmpty()) {
-            Toast.makeText(getActivity(), R.string.text_nothing_found, Toast.LENGTH_SHORT).show();
+            View view = getView();
+            if (view != null) {
+                Snackbar.make(view, R.string.text_nothing_found, Snackbar.LENGTH_SHORT).show();
+            }
         }
         if (mListView.getAdapter() == null) {
             TextItemsAdapter<Song> artistsAdapter = new TextItemsAdapter<>(getActivity(), R.layout.list_item, mShowingSongs);
@@ -186,9 +208,6 @@ public class SongsListFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_songs_list, menu);
-        if (! PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean(PREF_SHOW_TOAST, true)) {
-            menu.findItem(R.id.action_rate).setVisible(false);
-        }
 
         MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         mSearchView = (SearchView) searchMenuItem.getActionView();
@@ -208,20 +227,4 @@ public class SongsListFragment extends Fragment {
         });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_rate) {
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse("market://details?id=com.alex.amalgamasongs"));
-            startActivity(i);
-
-            // после первого нажатия перестаем показывать тосты
-            PreferenceManager.getDefaultSharedPreferences(getActivity())
-                    .edit()
-                    .putBoolean(PREF_SHOW_TOAST, false)
-                    .apply();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

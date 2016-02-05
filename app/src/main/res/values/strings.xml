@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">Переводы Песен Amalgama</string>
+    <string name="app_name">Переводы Песен</string>
 
-    <string name="text_translations_source">Источник переводов:\n amalgama-lab.com</string>
     <string name="text_choose_letter">Выберите исполнителя по первой букве (цифре):</string>
     <string name="text_original">оригинал</string>
     <string name="text_translation">перевод</string>
@@ -17,12 +16,12 @@
     <string name="text_clear_saved_songs_cache">Удалить сохраненные песни</string>
     <string name="text_saved_songs_cache_cleared">Сохраненные песни удалены!</string>
 
-    <string name="text_rate_it">Понравилось приложение?\nОцени его :)</string>
+    <string name="text_rate_it">Понравилось приложение? Оцени его :)</string>
     <string name="text_rate">Оценить</string>
     <string name="text_search">Поиск</string>
     <string name="text_delete_selected_songs">Удалить выделенные песни</string>
     <string name="text_selected">"Выделено: "</string>
     <string name="text_cancel">Отмена</string>
-    <string name="search_hint">Поиск на amalgama-lab.com</string>
+    <string name="search_hint">Поиск</string>
     <string name="text_nothing_found">Ничего не найдено.</string>
 </resources>

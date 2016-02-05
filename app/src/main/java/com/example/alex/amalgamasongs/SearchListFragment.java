@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,14 +19,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.alex.amalgamasongs.entity.Artist;
 import com.example.alex.amalgamasongs.entity.SearchResult;
@@ -60,21 +59,18 @@ public class SearchListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListView = (ListView) view.findViewById(android.R.id.list);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SearchResult searchResult = mResults.get(position);
-                Intent intent;
-                if (searchResult.mIsSong) {
-                    intent = new Intent(getActivity(), TranslationActivity.class);
-                    intent.putExtra(TranslationActivity.EXTRA_ARTIST, searchResult.mArtist);
-                    intent.putExtra(TranslationActivity.EXTRA_SONG, searchResult.mSong);
-                } else {
-                    intent = new Intent(getActivity(), SongsListActivity.class);
-                    intent.putExtra(SongsListActivity.EXTRA_ARTIST, searchResult.mArtist);
-                }
-                startActivity(intent);
+        mListView.setOnItemClickListener((parent, view1, position, id) -> {
+            SearchResult searchResult = mResults.get(position);
+            Intent intent;
+            if (searchResult.mIsSong) {
+                intent = new Intent(getActivity(), TranslationActivity.class);
+                intent.putExtra(TranslationActivity.EXTRA_ARTIST, searchResult.mArtist);
+                intent.putExtra(TranslationActivity.EXTRA_SONG, searchResult.mSong);
+            } else {
+                intent = new Intent(getActivity(), SongsListActivity.class);
+                intent.putExtra(SongsListActivity.EXTRA_ARTIST, searchResult.mArtist);
             }
+            startActivity(intent);
         });
 
         mProgressBar = (ProgressBar) view.findViewById(android.R.id.empty);
@@ -189,7 +185,10 @@ public class SearchListFragment extends Fragment {
             }
             updateUI();
             if (mResults.isEmpty()) {
-                Toast.makeText(getActivity(), R.string.text_nothing_found, Toast.LENGTH_SHORT).show();
+                View view = getView();
+                if (view != null) {
+                    Snackbar.make(view, R.string.text_nothing_found, Snackbar.LENGTH_SHORT).show();
+                }
             }
         }
     }
