@@ -9,8 +9,8 @@ android {
         applicationId "com.alex.songs_translations"
         minSdkVersion 17
         targetSdkVersion 23
-        versionCode 14
-        versionName "1.8"
+        versionCode 15
+        versionName "1.8.1"
     }
     buildTypes {
         release {
